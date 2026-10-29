@@ -47,12 +47,15 @@
 
   App.prototype.boot = function () {
     this.showScreen("screen-loading");
+    if (root.location && /[?&]debug=zones/.test(root.location.search)) {
+      this.renderer.debugZones = true; // QA overlay for control hit zones
+    }
     const urls = ["data/questions.json", "data/levels.json"];
     const imageList = []
       .concat(CC.Assets.toys.map(t => t.src))
-      .concat([CC.Assets.frames.desktop.src, CC.Assets.frames.ipad.src,
-               CC.Assets.frames.phone.src, CC.Assets.clawOpen.src,
-               CC.Assets.clawClosed.src, CC.Assets.questionCard.src]);
+      .concat(CC.Assets.activeFrames.map(k => CC.Assets.frames[k].src))
+      .concat([CC.Assets.clawOpen.src, CC.Assets.clawClosed.src,
+               CC.Assets.questionCard.src]);
 
     Promise.all(urls.map(fetchJSON))
       .then(data => {
@@ -87,7 +90,8 @@
     ["screen-loading", "screen-error", "screen-start", "screen-levels",
      "screen-pause", "screen-results", "screen-ready"]
       .forEach(s => { const n = $(s); if (n) n.classList.toggle("hidden", s !== id); });
-    if (id) this.setOverlaySizing(!!id);
+    // must run for null too: resuming (hideScreens) has to lift the dim filter
+    this.setOverlaySizing(!!id);
   };
 
   App.prototype.hideScreens = function () {
@@ -165,7 +169,10 @@
     const wrap = $("game-wrap");
     const bar = $("touch-bar");
     let barH = 0;
-    if (bar) {
+    // reserve bar space only when a frame without pictured controls is
+    // actually going to show it (all current frames picture their controls)
+    const frame = this.renderer && this.renderer.frame;
+    if (bar && frame && !frame.controls) {
       const wasHidden = bar.classList.contains("hidden");
       if (wasHidden) bar.classList.remove("hidden"); // measure real footprint
       barH = bar.offsetHeight;
@@ -193,7 +200,10 @@
         n++;
       }
       if (n === MAX_CATCHUP_STEPS) this.accumulator = 0; // bounded catch-up
-      this.renderer.draw(this.game);
+      this.renderer.draw(this.game, {
+        dir: this.controls ? this.controls.dir() : 0,
+        dropAt: this.controls ? this.controls.lastDropAt : 0
+      });
       this.rafId = requestAnimationFrame(step);
     };
     this.rafId = requestAnimationFrame(step);
@@ -329,6 +339,11 @@
 
     window.addEventListener("resize", this._onResize);
     window.addEventListener("orientationchange", this._onResize);
+    // mobile browsers fire resize late when toolbars animate; visualViewport
+    // tracks the real visible area (guarded, desktop-safe)
+    if (root.visualViewport) {
+      root.visualViewport.addEventListener("resize", this._onResize);
+    }
     document.addEventListener("visibilitychange", this._onVisibility);
     window.addEventListener("blur", this._onWindowBlur);
 

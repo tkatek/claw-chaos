@@ -7,6 +7,7 @@
   #touch-bar { padding: 6px 10px; }
   .pad-btn { width: 56px; height: 56px; font-size: 20px; }
   .pad-btn.drop { width: 72px; height: 72px; font-size: 16px; }
+  .chrome-btn { width: 38px; height: 38px; top: 6px; left: 6px; }
 }
 
 @media (max-width: 420px) {
@@ -18,4 +19,10 @@
 @media (pointer: coarse) {
   .pad-btn { width: 84px; height: 84px; }
   .pad-btn.drop { width: 104px; height: 104px; }
+}
+
+/* essential feedback only: no decorative motion for reduced-motion users */
+@media (prefers-reduced-motion: reduce) {
+  .gold-btn, .pad-btn, .chrome-btn { transition: none; }
+  .logo { text-shadow: 0 3px 0 #7a4b00; }
 }

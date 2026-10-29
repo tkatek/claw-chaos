@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+  body { margin:0; background:#222; font:13px monospace; }
+  .cell { background:repeating-conic-gradient(#555 0% 25%, #888 0% 50%) 0 0/16px 16px; padding:4px; display:inline-block; }
+  .cell span { color:#fff; display:block; background:#000; padding:2px; }
+  .wrap { position:relative; display:inline-block; }
+  .grid { position:absolute; inset:0; background:
+    repeating-linear-gradient(90deg, rgba(255,255,255,.25) 0 1px, transparent 1px calc(100%/10)),
+    repeating-linear-gradient(rgba(255,255,255,.25) 0 1px, transparent 1px calc(100%/10)); }
+  .lbl { position:absolute; color:#0ff; font:11px monospace; text-shadow:0 0 2px #000; }
+</style></head><body>
+<!-- photo_a console x .15-.95, y .70-1.0, drawn 4x with 10% grid -->
+<div class="cell"><span>photo_a console x .15-.95 y .70-1.0 (grid = 10% of CROP)</span>
+  <div class="wrap">
+    <div class="crop" style="overflow:hidden;width:1176px;height:752px">
+      <img src="../assets/backdrop/photo_a.png" style="width:1882px;position:relative;left:-282px;top:-1170px">
+    </div>
+    <div class="grid"></div>
+    <div class="lbl" style="left:0;top:0">x.15</div><div class="lbl" style="left:calc(100% - 30px);top:0">x.95</div>
+    <div class="lbl" style="left:0;top:calc(100% - 14px)">y 1.0</div>
+  </div>
+</div>
+</body></html>

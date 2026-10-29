@@ -40,7 +40,7 @@ test("every referenced asset exists with the calibrated dimensions", () => {
     assert.eq(s.w, 3840, t.src + " width");
     assert.eq(s.h, 3840, t.src + " height");
   });
-  ["desktop", "ipad", "phone"].forEach(k => {
+  ["wide", "portrait", "desktop", "ipad", "phone"].forEach(k => {
     const f = A.frames[k];
     const abs = checkPath(f.src, "frame " + k);
     const s = pngSize(abs);
@@ -71,9 +71,13 @@ test("calibration rectangles are sane (inside unit square, non-empty)", () => {
   const rects = [A.clawOpen.headRect, A.clawClosed.headRect, A.clawClosed.cableStrip,
     A.questionCard.textRect];
   A.toys.forEach(t => rects.push(t.labelRect));
-  ["desktop", "ipad", "phone"].forEach(k => {
-    rects.push(A.frames[k].interior);
-    const c = A.frames[k].controls;
+  ["wide", "portrait", "desktop", "ipad", "phone"].forEach(k => {
+    const f = A.frames[k];
+    rects.push(f.interior);
+    // mid band: ordered vertical span inside the art
+    assert.ok(f.mid.y0 > 0 && f.mid.y1 < 1 && f.mid.y0 < f.mid.y1,
+      k + ": bad mid band " + JSON.stringify(f.mid));
+    const c = f.controls;
     if (c) ["left", "right", "drop"].forEach(n => rects.push(c[n]));
   });
   rects.forEach((r, i) => {
@@ -94,23 +98,53 @@ test("toy label plates sit in the measured band (y .54-.78 of the image)", () =>
 
 test("frame selection is aspect-based (no user-agent logic)", () => {
   const A = CC.Assets;
-  // portrait phone
-  assert.eq(A.selectFrame(390 / 844), A.frames.phone);
-  assert.eq(A.selectFrame(320 / 568), A.frames.phone);
-  // desktop 16:9
-  assert.eq(A.selectFrame(1920 / 1080), A.frames.desktop);
-  assert.eq(A.selectFrame(844 / 390), A.frames.desktop, "phone landscape reuses desktop frame");
-  // tablet 4:3 both orientations
-  assert.eq(A.selectFrame(1024 / 768), A.frames.ipad);
-  assert.eq(A.selectFrame(768 / 1024), A.frames.ipad);
-  // wide 21:9 still desktop
-  assert.eq(A.selectFrame(2.4), A.frames.desktop);
+  // portrait phones and portrait tablets get the tall cabinet
+  assert.eq(A.selectFrame(390 / 844), A.frames.portrait);
+  assert.eq(A.selectFrame(320 / 568), A.frames.portrait);
+  assert.eq(A.selectFrame(768 / 1024), A.frames.portrait, "portrait tablet uses tall cabinet");
+  // desktop / landscape phone / landscape tablet get the wide cabinet
+  assert.eq(A.selectFrame(1920 / 1080), A.frames.wide);
+  assert.eq(A.selectFrame(844 / 390), A.frames.wide, "phone landscape reuses the wide frame");
+  assert.eq(A.selectFrame(1024 / 768), A.frames.wide);
+  // wide 21:9 still the wide cabinet
+  assert.eq(A.selectFrame(2.4), A.frames.wide);
 });
 
-test("phone frame pictures controls; desktop/ipad do not (no duplicates)", () => {
-  assert.ok(CC.Assets.frames.phone.controls, "phone frame has pictured buttons");
-  assert.eq(CC.Assets.frames.desktop.controls, null);
-  assert.eq(CC.Assets.frames.ipad.controls, null);
+test("active cabinets are the approved art with drawn-in controls", () => {
+  const A = CC.Assets;
+  A.activeFrames.forEach(k => {
+    const f = A.frames[k];
+    assert.ok(!f.legacy, k + " must be a primary frame");
+    assert.ok(f.controls && f.controls.drawn === true,
+      k + ": approved art already draws its controls");
+    // the stretchable mid band must contain the whole interior window
+    assert.ok(f.mid.y0 <= f.interior.y + 1e-6 &&
+      f.interior.y + f.interior.h <= f.mid.y1 + 1e-6,
+      k + ": interior escapes the stretchable mid band");
+  });
+});
+
+test("every frame pictures shelf controls with valid, playable hit regions", () => {
+  const A = CC.Assets;
+  ["wide", "portrait", "phone", "desktop", "ipad"].forEach(k => {
+    const f = A.frames[k];
+    const c = f.controls;
+    assert.ok(c, k + " frame has pictured control hit regions");
+    ["left", "right", "drop"].forEach(b => {
+      const r = c[b];
+      assert.ok(r && r.w > 0 && r.h > 0, k + "." + b + ": missing/empty region");
+      assert.ok(r.x >= 0 && r.y >= 0 && r.x + r.w <= 1 && r.y + r.h <= 1,
+        k + "." + b + ": region escapes the frame");
+      // controls live in the shelf band, never over the playfield window
+      assert.ok(r.y >= f.interior.y + f.interior.h - 0.02,
+        k + "." + b + ": region overlaps the interior window");
+    });
+    // steering regions must not overlap the drop target
+    const hit = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w &&
+      a.y < b.y + b.h && b.y < a.y + a.h;
+    assert.ok(!hit(c.left, c.drop), k + ": left region overlaps drop");
+    assert.ok(!hit(c.right, c.drop), k + ": right region overlaps drop");
+  });
 });
 
 test("data JSON files parse", () => {

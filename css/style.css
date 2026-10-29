@@ -3,26 +3,32 @@
 
 html, body {
   height: 100%;
-  background: #120b26;
+  background: #2a1145;
   color: #fff;
   font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
   overflow: hidden;
-  -webkit-user-select: none;
-  user-select: none;
+  overscroll-behavior: none;
 }
 
 #game-shell {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
+  height: 100dvh;
 }
 
 #game-wrap {
   position: relative;
   flex: 1;
   min-height: 0;
-  background: radial-gradient(ellipse at 50% 30%, #241448 0%, #120b26 70%);
+  /* under-paint only: the canvas draws the full arcade room every frame;
+     this deep violet keeps any paint gap from flashing a flat page color */
+  background:
+    radial-gradient(ellipse at 50% 34%, rgba(255, 158, 96, 0.20) 0%, rgba(255, 158, 96, 0) 52%),
+    linear-gradient(180deg, #2a1145 0%, #3d1a5e 55%, #1d0c33 100%);
   overflow: hidden;
+  -webkit-user-select: none;  /* gestures in the play area only; overlays stay */
+  user-select: none;          /* selectable so help text can be copied */
 }
 
 #game-canvas {
@@ -35,17 +41,21 @@ html, body {
 /* ---- chrome ---- */
 .chrome-btn {
   position: absolute;
-  top: 10px; right: 10px;
+  top: max(10px, env(safe-area-inset-top, 0px));
+  left: max(10px, env(safe-area-inset-left, 0px));
   z-index: 30;
   width: 44px; height: 44px;
-  border-radius: 12px;
-  border: 2px solid #ffd66a;
-  background: rgba(20, 10, 40, 0.75);
-  color: #ffd66a;
-  font-size: 18px;
-  font-weight: 700;
+  border-radius: 14px;
+  border: 2px solid #ffe3a1;
+  background: linear-gradient(#ff9c4d, #f57a1f);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 900;
   cursor: pointer;
+  box-shadow: 0 3px 0 #a34d0c, 0 6px 14px rgba(0, 0, 0, .35);
+  touch-action: manipulation;
 }
+.chrome-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #a34d0c; }
 
 /* ---- overlays ---- */
 .overlay {
@@ -58,7 +68,9 @@ html, body {
   justify-content: center;
   gap: 14px;
   padding: 24px;
-  background: rgba(10, 5, 24, 0.72);
+  padding-top: calc(24px + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  background: radial-gradient(ellipse at 50% 32%, rgba(74, 35, 133, .92), rgba(10, 5, 24, .93) 72%);
   text-align: center;
   overflow-y: auto;
 }
@@ -89,8 +101,9 @@ html, body {
   padding: 10px 22px;
   cursor: pointer;
   min-width: 130px;
-  box-shadow: 0 4px 0 #8a5a00;
+  box-shadow: 0 4px 0 #8a5a00, 0 8px 18px rgba(0, 0, 0, .3);
 }
+.gold-btn:hover { filter: brightness(1.06); }
 .gold-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #8a5a00; }
 .gold-btn.big { font-size: clamp(20px, 4.5vw, 28px); padding: 14px 42px; }
 

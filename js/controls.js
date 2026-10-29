@@ -17,6 +17,7 @@
     this.keys = { left: false, right: false };
     this.pointerDir = 0;          // -1/0/+1 while a control button is held
     this.dropLatch = false;       // one DROP request pending
+    this.lastDropAt = 0;          // timestamp of the last DROP press (visual feedback)
     this.paused = false;          // input parked while overlay is up
     this.enabled = true;
 
@@ -35,6 +36,9 @@
   Controls.prototype.requestDrop = function () {
     if (!this.enabled || this.paused) return;
     this.dropLatch = true;
+    // same clock the renderer uses, so press flashes stay in sync
+    this.lastDropAt = (root.performance && root.performance.now)
+      ? root.performance.now() : Date.now();
   };
 
   Controls.prototype.consumeDrop = function () {
@@ -111,11 +115,24 @@
     this._onPointerCancel = function (e) { self._releasePointer(e); };
     this._onLostCapture = function (e) { self._releasePointer(e); };
 
+    // While steering on the pictured pad, dragging across its midline flips
+    // direction - the pad behaves like the joystick it pictures. The tracked
+    // region follows the drag so releasing always clears the held direction.
+    this._onPointerMove = function (e) {
+      const held = self._pointers.get(e.pointerId);
+      if (held !== "left" && held !== "right") return;
+      if (!self.enabled || self.paused) return;
+      const t = self.hitTest ? self.hitTest(e) : null;
+      if (t === "left") { self.pointerDir = -1; self._pointers.set(e.pointerId, "left"); }
+      else if (t === "right") { self.pointerDir = 1; self._pointers.set(e.pointerId, "right"); }
+    };
+
     this._onBlur = function () { self.clear(); };
 
     root.addEventListener("keydown", this._onKeyDown, { passive: false });
     root.addEventListener("keyup", this._onKeyUp);
     this.canvas.addEventListener("pointerdown", this._onPointerDown, { passive: false });
+    this.canvas.addEventListener("pointermove", this._onPointerMove);
     this.canvas.addEventListener("pointerup", this._onPointerUp);
     this.canvas.addEventListener("pointercancel", this._onPointerCancel);
     this.canvas.addEventListener("lostpointercapture", this._onLostCapture);
@@ -133,6 +150,7 @@
     root.removeEventListener("keydown", this._onKeyDown);
     root.removeEventListener("keyup", this._onKeyUp);
     this.canvas.removeEventListener("pointerdown", this._onPointerDown);
+    this.canvas.removeEventListener("pointermove", this._onPointerMove);
     this.canvas.removeEventListener("pointerup", this._onPointerUp);
     this.canvas.removeEventListener("pointercancel", this._onPointerCancel);
     this.canvas.removeEventListener("lostpointercapture", this._onLostCapture);
