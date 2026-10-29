@@ -57,11 +57,16 @@
     this.primeCache();
   };
 
-  // Compose the cabinet: top marquee + stretchable window band + bottom
-  // console (nine-slice on the measured mid band). Prefer filling BOTH
-  // viewport axes by stretching only the window band within safe limits;
-  // otherwise keep natural proportions and let the painted arcade room fill
-  // the remaining strips. Never squash the marquee/console, never crop.
+  // Compose the cabinet.
+  //  Vertical: top marquee + stretchable window band + bottom console
+  //  (nine-slice on the measured mid band). Width-limited viewports stretch
+  //  only that band to fill the height.
+  //  Horizontal: when the viewport is wider than the art (desktop 16:9),
+  //  the cabinet is EXTENDED through measured safe columns - bulb gaps in
+  //  the marquee, the plain console nameplate, the transparent window hole -
+  //  so it occupies 88-96% of the width with zero distortion of bulbs,
+  //  buttons or rails. Every section gains the same total width, so the
+  //  glass rails stay aligned with the marquee above and console below.
   Renderer.prototype.measure = function () {
     const fr = this.frame;
     const art = { w: fr.width, h: fr.height };
@@ -70,31 +75,72 @@
     const kMax = 2.9;
 
     let k = 1, s = Math.min(this.cssH / art.h, this.cssW / art.w);
-    const sW = this.cssW / art.w;
-    const fixedNatH = (m.y0 + (1 - m.y1)) * art.h;    // top + bottom bands
-    const midNatH = (m.y1 - m.y0) * art.h;
-    const kFill = (this.cssH - sW * fixedNatH) / (sW * midNatH);
-    if (kFill >= kMin && kFill <= kMax) { k = kFill; s = sW; }
-
+    let xExtra = 0;
+    const sW = this.cssW / art.w, sH = this.cssH / art.h;
+    if (sW <= sH || !fr.xb) {
+      // width-limited: fill the height by stretching the window band
+      const fixedNatH = (m.y0 + (1 - m.y1)) * art.h;
+      const midNatH = (m.y1 - m.y0) * art.h;
+      const kFill = (this.cssH - sW * fixedNatH) / (sW * midNatH);
+      if (sW <= sH && kFill >= kMin && kFill <= kMax) { k = kFill; s = sW; }
+    } else {
+      // height-limited: natural section heights, extend horizontally
+      s = sH;
+      const baseW = s * art.w;
+      const want = Math.max(0, Math.min(this.cssW * 0.94, this.cssW - 8) - baseW);
+      const holeW = fr.interior.w * baseW;
+      const holeH = fr.interior.h * art.h * s; // k = 1 here
+      const cap = Math.max(0, (fr.maxInteriorAspect || 3.1) * holeH - holeW);
+      xExtra = Math.min(want, cap);
+    }
     this.frameScale = s;
     this.midStretch = k;
+    this.xExtra = xExtra;
+
     const topH = m.y0 * art.h * s;
-    const midH = midNatH * s * k;
+    const midH = (m.y1 - m.y0) * art.h * s * k;
     const botH = (1 - m.y1) * art.h * s;
-    const w = art.w * s, h = topH + midH + botH;
+    const w = art.w * s + xExtra, h = topH + midH + botH;
     this.frameRect = {
       x: (this.cssW - w) / 2, y: (this.cssH - h) / 2, w: w, h: h,
       topH: topH, midH: midH, botH: botH
     };
+
+    // per-section horizontal mapping through the safe stretch columns
+    const baseW = art.w * s;
+    this.xMaps = {};
+    ["top", "mid", "bottom"].forEach(sec => {
+      const cols = (fr.xb && fr.xb[sec]) || [];
+      const each = cols.length ? xExtra / cols.length : 0;
+      this.xMaps[sec] = { cols: cols, each: each, baseW: baseW };
+    });
+
     const ir = fr.interior;
     const midSpan = m.y1 - m.y0;
+    const x0 = this.xMapN("mid", ir.x), x1 = this.xMapN("mid", ir.x + ir.w);
     this.interiorRect = {
-      x: this.frameRect.x + ir.x * w,
+      x: this.frameRect.x + x0,
       y: this.frameRect.y + topH + (ir.y - m.y0) / midSpan * midH,
-      w: ir.w * w,
+      w: x1 - x0,
       h: ir.h / midSpan * midH
     };
     this.worldH = WORLD_W * (this.interiorRect.h / Math.max(1, this.interiorRect.w));
+  };
+
+  // Normalized art-space x -> px offset from the composed cabinet's left
+  // edge, distributing the section's extra width across its stretch columns.
+  Renderer.prototype.xMapN = function (sec, nx) {
+    const xm = this.xMaps && this.xMaps[sec];
+    if (!xm) return nx * (this.frameRect ? this.frameRect.w : 0);
+    let x = nx * xm.baseW;
+    for (let i = 0; i < xm.cols.length; i++) {
+      const c = xm.cols[i];
+      if (nx <= c[0]) break;
+      if (nx >= c[1]) { x += xm.each; continue; }
+      x += (nx - c[0]) / (c[1] - c[0]) * xm.each;
+      break;
+    }
+    return x;
   };
 
   // Normalized art-space y -> css px y inside the composed cabinet, mapping
@@ -106,15 +152,18 @@
     return F.y + F.topH + (ny - m.y0) / (m.y1 - m.y0) * F.midH;
   };
 
-  // CSS px rect of a named control hit zone (left/right/drop/joy).
+  // CSS px rect of a named control hit zone (left/right/drop/joy). Controls
+  // live in the console (bottom) section and map through its x columns.
   Renderer.prototype.ctlRect = function (name) {
     const c = this.frame && this.frame.controls;
     if (!c || !c[name]) return null;
     const r = c[name];
     const F = this.frameRect;
+    const x0 = this.xMapN("bottom", r.x);
+    const x1 = this.xMapN("bottom", r.x + r.w);
     const y0 = this.yMap(r.y);
     const y1 = this.yMap(r.y + r.h);
-    return { x: F.x + r.x * F.w, y: y0, w: r.w * F.w, h: y1 - y0 };
+    return { x: F.x + x0, y: y0, w: x1 - x0, h: y1 - y0 };
   };
 
   // Marquee (top band) rectangle in CSS px - HUD and logo anchor.
@@ -148,7 +197,9 @@
       return cv;
     };
 
-    // composed cabinet: three vertical slices around the stretched mid band
+    // composed cabinet: vertical sections (marquee / window band / console)
+    // each split at its safe stretch columns; only those column tiles widen,
+    // so bulbs, buttons and glass rails are never scaled
     const fr = this.frame, m = fr.mid, F = this.frameRect;
     const img = this.images[fr.src];
     if (img) {
@@ -157,12 +208,27 @@
       cv.height = Math.max(2, Math.round(F.h * dpr));
       const cx = cv.getContext("2d");
       cx.imageSmoothingQuality = "high";
-      const slice = (sy0, sy1, dy, dh) => cx.drawImage(img,
-        0, sy0 * img.naturalHeight, img.naturalWidth, (sy1 - sy0) * img.naturalHeight,
-        0, dy * dpr, cv.width, dh * dpr);
-      slice(0, m.y0, 0, F.topH);
-      slice(m.y0, m.y1, F.topH, F.midH);
-      slice(m.y1, 1, F.topH + F.midH, F.botH);
+      const vsecs = [["top", 0, m.y0, 0, F.topH],
+                     ["mid", m.y0, m.y1, F.topH, F.midH],
+                     ["bottom", m.y1, 1, F.topH + F.midH, F.botH]];
+      vsecs.forEach(vs => {
+        const [sec, y0, y1, dy, dh] = vs;
+        const cols = (fr.xb && fr.xb[sec]) || [];
+        // horizontal cut points: 0, every column edge, 1
+        const cuts = [0];
+        cols.forEach(c => { cuts.push(c[0], c[1]); });
+        cuts.push(1);
+        for (let i = 0; i < cuts.length - 1; i++) {
+          const xa = cuts[i], xb2 = cuts[i + 1];
+          if (xb2 - xa <= 1e-6) continue;
+          const dxa = this.xMapN(sec, xa), dxb = this.xMapN(sec, xb2);
+          if (dxb - dxa <= 0.5) continue;
+          cx.drawImage(img,
+            xa * img.naturalWidth, y0 * img.naturalHeight,
+            (xb2 - xa) * img.naturalWidth, (y1 - y0) * img.naturalHeight,
+            dxa * dpr, dy * dpr, (dxb - dxa) * dpr, dh * dpr);
+        }
+      });
       this.cache["frame:" + this.frameKey] = cv;
     }
 
@@ -289,6 +355,25 @@
     glow(W * 0.08, H * 0.22, H * 0.34, "120,220,255", 0.10);
     glow(W * 0.92, H * 0.24, H * 0.36, "255,130,215", 0.11);
 
+    // warm arcade spotlights from the top corners onto the pile (matching
+    // the reference's lit-case look; purely decorative)
+    [["255,214,150", 0.20, 0.34], ["150,215,255", 0.80, 0.30], ["255,170,200", 0.50, 0.18]]
+      .forEach(sp => {
+        const sx = sp[1] * W;
+        const lg2 = cx.createLinearGradient(sx, 0, sx, H);
+        lg2.addColorStop(0, "rgba(" + sp[0] + ",0.16)");
+        lg2.addColorStop(0.55, "rgba(" + sp[0] + ",0.06)");
+        lg2.addColorStop(1, "rgba(" + sp[0] + ",0)");
+        cx.fillStyle = lg2;
+        cx.beginPath();
+        cx.moveTo(sx - W * 0.045, 0);
+        cx.lineTo(sx + W * 0.045, 0);
+        cx.lineTo(sx + W * sp[2] * 0.9, H);
+        cx.lineTo(sx - W * sp[2] * 0.9, H);
+        cx.closePath();
+        cx.fill();
+      });
+
     // crescent moon + sparkle stars (phone reference motif, subtle)
     const mr = Math.max(7, H * 0.045);
     const mx = W * 0.82, my = H * 0.10;
@@ -321,11 +406,14 @@
     cx.fillStyle = g;
     cx.fillRect(0, H * 0.40, W, H * 0.60);
 
-    // dense decorative plush pile: back rows small/soft, front rows large
+    // dense decorative plush pile: back rows small/soft (blurred = depth),
+    // front rows large and vivid. Always dimmer/softer than the live toys.
     const frontPx = Math.min(H * 0.5, (W / 3) * 1.3); // approx front-toy px size
     CC.Assets.backdrop.rows.forEach((row, ri) => {
       const th = row.scale * frontPx;
       const baseY = row.baseY * H;
+      const blur = row.blur || 0;
+      if (blur > 0) cx.filter = "blur(" + (blur * Math.max(0.7, H / 460)).toFixed(1) + "px)";
       for (let i = 0; i < row.count; i++) {
         const img = this.cache["toy:" + ((i * 3 + ri * 2) % CC.Assets.toys.length)];
         if (!img) continue;
@@ -339,6 +427,7 @@
         cx.drawImage(img, x - th / 2, y, th, th);
         cx.globalAlpha = 1;
       }
+      cx.filter = "none";
       // soft contact shadow line under each row to build pile depth
       cx.fillStyle = "rgba(30,10,64," + (0.10 + ri * 0.05).toFixed(2) + ")";
       cx.fillRect(0, baseY - th * 0.04, W, Math.max(2, th * 0.07));
@@ -401,9 +490,11 @@
   Renderer.prototype.wsy = function (h) { return h / this.worldH * this.interiorRect.h; };
 
   // Question card geometry in world units, shared by layout and drawing.
+  // Width-capped on tall windows, height-capped on wide ones, so the card is
+  // large and readable on every interior shape.
   Renderer.prototype.cardWorld = function () {
     const worldH = this.worldH;
-    const w = Math.min(0.90 * WORLD_W, worldH * 0.40);
+    const w = Math.min(0.88 * WORLD_W, 0.90 * worldH);
     return { x: (WORLD_W - w) / 2, y: worldH * 0.012, w: w, h: w / 3 };
   };
 
@@ -417,10 +508,10 @@
     // wide plates (0.56 of the toy square) still stay inside one lane at
     // 1.55x, so neighbouring answer plates never cover each other; the
     // worldH cap keeps a visible claw descent between card and toys
-    const toyHeight = Math.min(worldH * 0.47, laneW * 1.55);
+    const toyHeight = Math.min(worldH * 0.44, laneW * 1.55);
     const headAspect = ((CC.Assets.clawOpen.headRect.h / CC.Assets.clawOpen.headRect.w) +
       (CC.Assets.clawClosed.headRect.h / CC.Assets.clawClosed.headRect.w)) / 2;
-    const clawHeadW = toyHeight * 0.55;               // claw sized like the toys
+    const clawHeadW = toyHeight * 0.62;               // prominent claw, toys sized
     const clawHeadWorldH = clawHeadW * headAspect;
     const card = this.cardWorld();
     const toyRowBottomY = worldH * 0.985;
@@ -516,6 +607,7 @@
     this.drawCard(game);
     this.drawHUD(game);
     this.drawShelf(game, hint || {});
+    this.drawConsoleTitle();
     if (game.state === "FEEDBACK" && game.feedback) this.drawFeedback(game);
   };
 
@@ -660,17 +752,18 @@
   };
 
   // HUD lives inside the cabinet's marquee band (measured top band), never
-  // over the playfield: pause+level+progress left, hearts center, score and
-  // clock right, CLAW CHAOS logo centered below them.
+  // over the playfield and clear of the marquee's bulb rows: LEVEL, question
+  // progress and hearts grouped upper-left; score and clock upper-right.
+  // No gameplay title on the marquee - a small one sits on the console plate.
   Renderer.prototype.drawHUD = function (game) {
     const ctx = this.ctx;
     const mq = this.marqueeRect();
-    if (mq.h < 30) return; // ultra-short marquee: HUD would be unreadable
-    const u = Math.max(14, Math.min(mq.h * 0.28, mq.w * 0.07)); // plaque height
-    const rowY = mq.y + mq.h * 0.12;
+    if (mq.h < 26) return; // ultra-short marquee: HUD would be unreadable
+    const u = Math.max(14, Math.min(mq.h * 0.34, mq.w * 0.058)); // plaque height
+    const rowY = mq.y + Math.max(mq.h * 0.10, u * 0.18);
 
-    // --- left cluster: level plaque + question progress, right of pause ---
-    let leftX = mq.x + Math.max(mq.w * 0.035, this.pauseRightPx() + 6);
+    // --- left cluster: level plaque + question progress + hearts ---
+    let leftX = mq.x + Math.max(mq.w * 0.03, this.pauseRightPx() + 6);
     ctx.font = this.font(800, u * 0.56);
     const lvlTxt = "LV " + game.level.id;
     const lvlW = ctx.measureText(lvlTxt).width + u * 0.7;
@@ -683,50 +776,14 @@
     const prog = "Q " + (game.qIndex + 1) + "/" + game.level.questionIds.length;
     ctx.font = this.font(800, u * 0.52);
     const progW = ctx.measureText(prog).width + u * 0.6;
-    this.plaque(leftX + lvlW + u * 0.35, rowY, progW, u);
+    this.plaque(leftX + lvlW + u * 0.32, rowY, progW, u);
     ctx.fillStyle = "rgba(255,241,215,0.95)";
-    ctx.fillText(prog, leftX + lvlW + u * 0.35 + progW / 2, rowY + u * 0.54);
+    ctx.fillText(prog, leftX + lvlW + u * 0.32 + progW / 2, rowY + u * 0.54);
 
-    // --- right cluster: score over clock, right-aligned ---
-    const rightX = mq.x + mq.w * 0.96;
-    const t = Math.max(0, game.timeLeft);
-    const grace = game.graceLeft > 0 && game.state === "AIMING";
-    const timeTxt = grace ? "READY" :
-      String(Math.floor(t / 60)).padStart(2, "0") + ":" + String(Math.floor(t % 60)).padStart(2, "0");
-    const danger = !grace && t <= 10 && game.state === "AIMING" && game.hearts > 0;
-    const pulse = danger && !this.reduced ? 1 + 0.045 * Math.sin(this.animT * 7) : 1;
-    ctx.font = this.font(800, u * 0.52);
-    const clkW = (ctx.measureText(timeTxt).width + u * 0.8) * pulse;
-    const clkH = u * pulse;
-    const cy0 = rowY + (u - clkH) / 2;
-    this.plaque(rightX - clkW, cy0, clkW, clkH);
-    ctx.textAlign = "right";
-    ctx.fillStyle = danger ? CC.Assets.palette.danger : CC.Assets.palette.ivory;
-    ctx.fillText(timeTxt, rightX - u * 0.28, cy0 + clkH * 0.54);
-
-    ctx.font = this.font(800, u * 0.56);
-    const scoreTxt = String(game.score);
-    const scoreW = ctx.measureText(scoreTxt).width + u * 1.35;
-    this.plaque(rightX - clkW - u * 0.3 - scoreW, rowY, scoreW, u);
-    const starC = rightX - clkW - u * 0.3 - scoreW + u * 0.52;
-    starPath(ctx, starC, rowY + u * 0.5, u * 0.34);
-    const sg = ctx.createLinearGradient(starC, rowY + u * 0.16, starC, rowY + u * 0.84);
-    sg.addColorStop(0, "#ffe9a8");
-    sg.addColorStop(1, "#f0a93c");
-    ctx.fillStyle = sg;
-    ctx.fill();
-    ctx.strokeStyle = "rgba(90,50,0,0.8)";
-    ctx.lineWidth = Math.max(1, u * 0.04);
-    starPath(ctx, starC, rowY + u * 0.5, u * 0.34);
-    ctx.stroke();
-    ctx.fillStyle = CC.Assets.palette.ivory;
-    ctx.fillText(scoreTxt, rightX - clkW - u * 0.3 - u * 0.26, rowY + u * 0.54);
-
-    // --- hearts centered between the clusters ---
-    const hs = u * 0.66;
-    const heartsCx = mq.x + mq.w / 2;
+    const hs = u * 0.62;
+    let hx0 = leftX + lvlW + u * 0.32 + progW + u * 0.55;
     for (let i = 0; i < 3; i++) {
-      const hx = heartsCx + (i - 1) * hs * 1.5;
+      const hx = hx0 + i * hs * 1.5;
       const hy = rowY + u * 0.5;
       const on = i < game.hearts;
       heartPath(ctx, hx, hy, hs);
@@ -749,10 +806,56 @@
       ctx.stroke();
     }
 
-    // --- CLAW CHAOS logo centered in the remaining marquee space ---
-    const logoY = rowY + u + mq.h * 0.045;
-    const logoH = Math.min((mq.y + mq.h * 0.96) - logoY, mq.h * 0.44);
-    if (logoH >= 12) this.drawLogo(mq.x + mq.w / 2, logoY, mq.w * 0.74, logoH);
+    // --- right cluster: score + clock, right-aligned ---
+    const rightX = mq.x + mq.w * 0.97;
+    const t = Math.max(0, game.timeLeft);
+    const grace = game.graceLeft > 0 && game.state === "AIMING";
+    const timeTxt = grace ? "READY" :
+      String(Math.floor(t / 60)).padStart(2, "0") + ":" + String(Math.floor(t % 60)).padStart(2, "0");
+    const danger = !grace && t <= 10 && game.state === "AIMING" && game.hearts > 0;
+    const pulse = danger && !this.reduced ? 1 + 0.045 * Math.sin(this.animT * 7) : 1;
+    ctx.font = this.font(800, u * 0.52);
+    const clkW = (ctx.measureText(timeTxt).width + u * 0.8) * pulse;
+    const clkH = u * pulse;
+    const cy0 = rowY + (u - clkH) / 2;
+    this.plaque(rightX - clkW, cy0, clkW, clkH);
+    ctx.textAlign = "right";
+    ctx.fillStyle = danger ? CC.Assets.palette.danger : CC.Assets.palette.ivory;
+    ctx.fillText(timeTxt, rightX - u * 0.28, cy0 + clkH * 0.54);
+
+    ctx.font = this.font(800, u * 0.56);
+    const scoreTxt = String(game.score);
+    const scoreW = ctx.measureText(scoreTxt).width + u * 1.35;
+    const scoreX = rightX - clkW - u * 0.3 - scoreW;
+    this.plaque(scoreX, rowY, scoreW, u);
+    const starC = scoreX + u * 0.52;
+    starPath(ctx, starC, rowY + u * 0.5, u * 0.34);
+    const sg = ctx.createLinearGradient(starC, rowY + u * 0.16, starC, rowY + u * 0.84);
+    sg.addColorStop(0, "#ffe9a8");
+    sg.addColorStop(1, "#f0a93c");
+    ctx.fillStyle = sg;
+    ctx.fill();
+    ctx.strokeStyle = "rgba(90,50,0,0.8)";
+    ctx.lineWidth = Math.max(1, u * 0.04);
+    starPath(ctx, starC, rowY + u * 0.5, u * 0.34);
+    ctx.stroke();
+    ctx.fillStyle = CC.Assets.palette.ivory;
+    ctx.fillText(scoreTxt, rightX - clkW - u * 0.3 - u * 0.26, rowY + u * 0.54);
+  };
+
+  // Small game title on the console's decorative center plate (wide frame
+  // only - the portrait console has no plate). Replaces the old giant
+  // marquee heading, which is now only on the home screen.
+  Renderer.prototype.drawConsoleTitle = function () {
+    const fr = this.frame;
+    if (!fr.xb || !fr.xb.bottom) return; // plates exist only on the wide art
+    const F = this.frameRect;
+    const x0 = this.xMapN("bottom", 0.435), x1 = this.xMapN("bottom", 0.575);
+    const y0 = this.yMap(0.775), y1 = this.yMap(0.865);
+    this.drawFittedText("CLAW CHAOS",
+      F.x + x0 + (x1 - x0) * 0.04, y0 + (y1 - y0) * 0.18,
+      (x1 - x0) * 0.92, (y1 - y0) * 0.64,
+      { color: CC.Assets.palette.ivory, bold: true, maxLines: 1, noStroke: true });
   };
 
   // Right edge of the DOM pause button in canvas coordinates, so the level
@@ -766,11 +869,11 @@
   };
 
   Renderer.prototype.drawLogo = function (cx, y, maxW, maxH) {
+    // home-screen style logo (currently unused on the gameplay screen)
     const ctx = this.ctx;
     let fs = maxH;
-    let w;
     ctx.font = this.font(900, fs);
-    w = ctx.measureText("CLAW CHAOS").width;
+    const w = ctx.measureText("CLAW CHAOS").width;
     if (w > maxW) { fs *= maxW / w; ctx.font = this.font(900, fs); }
     ctx.textAlign = "center";
     ctx.textBaseline = "top";

@@ -4,12 +4,14 @@
 Actual app screenshots of the running game (not mockups), captured via the
 in-app browser from the local nested-path server:
 
-- desktop-1920x1080.png, desktop-1366x768.png, desktop-1440x900.png
+- desktop-1919x1003.png, desktop-1920x1080.png, desktop-1366x768.png,
+  desktop-1440x900.png (wide composed cabinet, 92-94% width)
 - ipad-1024x768.png, ipad-768x1024.png
-- phone-393x852.png, phone-390x844.png, phone-375x667.png, phone-320x568.png
+- phone-409x866.png, phone-393x852.png, phone-375x667.png, phone-320x568.png
 - phone-landscape-844x390.png
 - state-carrying-desktop.png  (claw ASCENDING with a caught toy)
 - state-feedback-desktop.png  (feedback pill after a correct grab)
+- state-aftercorrect-desktop.png (extended cabinet after a correct catch)
 
 All captured in AIMING/gameplay state (no pause or loading overlay), after the
 final layout pass. Compare against the approved targets

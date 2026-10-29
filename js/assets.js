@@ -112,6 +112,20 @@
     joy:   { x: 0.155, y: 0.750, w: 0.090, h: 0.140 }
   };
 
+  // Horizontal extension columns for the wide cabinet (art-space x ranges
+  // that are plain in that vertical section, measured from the PNG):
+  //  - marquee: gaps between the bulb rows (bulbs sit at ~5.3% pitch;
+  //    these columns avoid every bulb on the y .035/.05/.16/.19 rows)
+  //  - mid: the transparent window hole between the glass rails
+  //  - console: the plain dark nameplate between the arrow buttons
+  // Every section receives the SAME total extra width, distributed over its
+  // own columns, so the rails above/below each section stay aligned.
+  const wideXb = {
+    top: [[0.352, 0.381], [0.455, 0.486], [0.514, 0.543], [0.568, 0.597]],
+    mid: [[0.30, 0.70]],
+    bottom: [[0.42, 0.50], [0.52, 0.585]]
+  };
+
   // photo_a.png (941x1672): approved portrait phone/tablet cabinet.
   // Window hole y .238-.689, x .2635-.7333. Console buttons (grid-measured,
   // qa/phone_arrows_zoom.html): red joystick x .17-.22, yellow left arrow
@@ -126,9 +140,11 @@
 
   Assets.frames = {
     // primary cabinets (approved reference art, controls drawn into the art)
-    wide: frame("assets/backdrop/photo_b.png", 1448, 1086,
-      { x: 0.1775, y: 0.2551, w: 0.6450, h: 0.4162 },
-      { y0: 0.2551, y1: 0.6713 }, wideControls),
+    wide: Object.assign(
+      frame("assets/backdrop/photo_b.png", 1448, 1086,
+        { x: 0.1775, y: 0.2551, w: 0.6450, h: 0.4162 },
+        { y0: 0.2551, y1: 0.6713 }, wideControls),
+      { xb: wideXb, maxInteriorAspect: 3.1 }),
     portrait: frame("assets/backdrop/photo_a.png", 941, 1672,
       { x: 0.2635, y: 0.2380, w: 0.4698, h: 0.4510 },
       { y0: 0.2380, y1: 0.6890 }, portraitControls),
@@ -209,16 +225,17 @@
   // --------------------------------------------------- scene dressing spec ---
   // Decorative interior: a bright starry arcade hall above a dense plush
   // pile. Purely decorative - never interactive, never carries answer text;
-  // the playable claw/toys are always drawn separately on top.
+  // the playable claw/toys are always drawn separately on top. Back rows
+  // get a soft blur from the renderer so they read as depth, not targets.
   Assets.backdrop = {
     // plush pile rows: back (small, soft) to front (large, vivid).
     // baseY is the row's baseline as a fraction of interior height; the
     // toys sink into the pile so rows overlap naturally.
     rows: [
-      { scale: 0.34, baseY: 0.66, alpha: 0.55, count: 7, jitter: 0.55 },
-      { scale: 0.46, baseY: 0.76, alpha: 0.72, count: 6, jitter: 0.60 },
-      { scale: 0.60, baseY: 0.87, alpha: 0.88, count: 5, jitter: 0.50 },
-      { scale: 0.74, baseY: 0.99, alpha: 1.00, count: 4, jitter: 0.45 }
+      { scale: 0.34, baseY: 0.50, alpha: 0.50, count: 8, jitter: 0.55, blur: 1.6 },
+      { scale: 0.46, baseY: 0.63, alpha: 0.68, count: 7, jitter: 0.60, blur: 1.1 },
+      { scale: 0.60, baseY: 0.77, alpha: 0.85, count: 6, jitter: 0.50, blur: 0.6 },
+      { scale: 0.74, baseY: 0.92, alpha: 1.00, count: 5, jitter: 0.45, blur: 0 }
     ],
     bokeh: [
       { x: 0.14, y: 0.16, r: 0.100, color: "255,138,214" },

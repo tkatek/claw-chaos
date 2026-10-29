@@ -124,6 +124,41 @@ test("active cabinets are the approved art with drawn-in controls", () => {
   });
 });
 
+test("wide horizontal extension columns are safe (ordered, clear of controls, hole-only in mid)", () => {
+  const A = CC.Assets;
+  const xb = A.frames.wide.xb;
+  assert.ok(xb, "wide frame declares safe stretch columns");
+  Object.keys(xb).forEach(sec => {
+    assert.ok(Array.isArray(xb[sec]) && xb[sec].length > 0,
+      "xb." + sec + ": needs at least one column");
+    let prevEnd = -1;
+    xb[sec].forEach(col => {
+      assert.ok(col[0] > prevEnd && col[0] < col[1] && col[1] <= 1,
+        "xb." + sec + ": columns must be ordered and inside the art: " + JSON.stringify(col));
+      prevEnd = col[1];
+    });
+  });
+  // mid-section columns may only widen the transparent window hole
+  const ir = A.frames.wide.interior;
+  xb.mid.forEach(col => {
+    assert.ok(col[0] >= ir.x && col[1] <= ir.x + ir.w,
+      "xb.mid column escapes the transparent hole: " + JSON.stringify(col));
+  });
+  // console columns must never cover a pictured control zone
+  const c = A.frames.wide.controls;
+  xb.bottom.forEach(col => {
+    ["left", "right", "drop", "joy"].forEach(b => {
+      const r = c[b];
+      const overlap = col[0] < r.x + r.w && r.x < col[1];
+      assert.ok(!overlap, "xb.bottom column overlaps the " + b + " zone: " + JSON.stringify(col));
+    });
+  });
+  // every section gains the same total width in the renderer because the
+  // extra is divided per column; that only works with fixed column lists
+  assert.ok(xb.top.length >= 2 && xb.bottom.length >= 1 && xb.mid.length === 1,
+    "unexpected column layout");
+});
+
 test("every frame pictures shelf controls with valid, playable hit regions", () => {
   const A = CC.Assets;
   ["wide", "portrait", "phone", "desktop", "ipad"].forEach(k => {
