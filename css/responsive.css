@@ -1,0 +1,21 @@
+/* CLAW CHAOS - responsive adjustments */
+@media (max-height: 480px) {
+  /* landscape phones: shrink chrome so the window keeps most of the height */
+  .logo { font-size: 30px; }
+  .gold-btn { padding: 6px 16px; min-width: 100px; }
+  .gold-btn.big { padding: 8px 24px; }
+  #touch-bar { padding: 6px 10px; }
+  .pad-btn { width: 56px; height: 56px; font-size: 20px; }
+  .pad-btn.drop { width: 72px; height: 72px; font-size: 16px; }
+}
+
+@media (max-width: 420px) {
+  #levels-grid { grid-template-columns: repeat(2, 1fr); }
+  .help-list { line-height: 1.5; }
+}
+
+/* coarse pointers get roomier buttons; fine pointers keep the bar slim */
+@media (pointer: coarse) {
+  .pad-btn { width: 84px; height: 84px; }
+  .pad-btn.drop { width: 104px; height: 104px; }
+}

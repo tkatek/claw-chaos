@@ -1,0 +1,1039 @@
+{
+  "questions": [
+    {
+      "id": "q001",
+      "levelId": 1,
+      "type": "antonym",
+      "prompt": "Find the opposite of HAPPY.",
+      "choices": [
+        { "id": "a", "text": "sad" },
+        { "id": "b", "text": "big" },
+        { "id": "c", "text": "fast" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "Happy and sad are opposites."
+    },
+    {
+      "id": "q002",
+      "levelId": 1,
+      "type": "antonym",
+      "prompt": "Find the opposite of BIG.",
+      "choices": [
+        { "id": "a", "text": "tall" },
+        { "id": "b", "text": "small" },
+        { "id": "c", "text": "warm" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "Big and small are opposites."
+    },
+    {
+      "id": "q003",
+      "levelId": 1,
+      "type": "antonym",
+      "prompt": "Find the opposite of HOT.",
+      "choices": [
+        { "id": "a", "text": "new" },
+        { "id": "b", "text": "loud" },
+        { "id": "c", "text": "cold" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "Hot and cold are opposites."
+    },
+    {
+      "id": "q004",
+      "levelId": 1,
+      "type": "antonym",
+      "prompt": "Find the opposite of FAST.",
+      "choices": [
+        { "id": "a", "text": "slow" },
+        { "id": "b", "text": "rich" },
+        { "id": "c", "text": "dark" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "Fast and slow are opposites."
+    },
+    {
+      "id": "q005",
+      "levelId": 1,
+      "type": "antonym",
+      "prompt": "Find the opposite of DAY.",
+      "choices": [
+        { "id": "a", "text": "week" },
+        { "id": "b", "text": "night" },
+        { "id": "c", "text": "year" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "Day and night are opposites."
+    },
+    {
+      "id": "q006",
+      "levelId": 2,
+      "type": "category",
+      "prompt": "Which one is a fruit?",
+      "choices": [
+        { "id": "a", "text": "banana" },
+        { "id": "b", "text": "chair" },
+        { "id": "c", "text": "shoe" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "A banana is a fruit. A chair and a shoe are not food."
+    },
+    {
+      "id": "q007",
+      "levelId": 2,
+      "type": "category",
+      "prompt": "Which one do you wear on your feet?",
+      "choices": [
+        { "id": "a", "text": "plate" },
+        { "id": "b", "text": "shoes" },
+        { "id": "c", "text": "apple" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "You wear shoes on your feet."
+    },
+    {
+      "id": "q008",
+      "levelId": 2,
+      "type": "category",
+      "prompt": "Which one is a drink?",
+      "choices": [
+        { "id": "a", "text": "bread" },
+        { "id": "b", "text": "hat" },
+        { "id": "c", "text": "milk" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "Milk is a drink. You eat bread and you wear a hat."
+    },
+    {
+      "id": "q009",
+      "levelId": 2,
+      "type": "category",
+      "prompt": "Which one is a vegetable?",
+      "choices": [
+        { "id": "a", "text": "carrot" },
+        { "id": "b", "text": "cake" },
+        { "id": "c", "text": "spoon" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "A carrot is a vegetable. Cake is sweet food and a spoon is a tool."
+    },
+    {
+      "id": "q010",
+      "levelId": 2,
+      "type": "category",
+      "prompt": "Which one do you sleep in?",
+      "choices": [
+        { "id": "a", "text": "cup" },
+        { "id": "b", "text": "bag" },
+        { "id": "c", "text": "bed" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "You sleep in a bed."
+    },
+    {
+      "id": "q011",
+      "levelId": 3,
+      "type": "animals-actions",
+      "prompt": "A cat says ___.",
+      "choices": [
+        { "id": "a", "text": "moo" },
+        { "id": "b", "text": "meow" },
+        { "id": "c", "text": "woof" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "Cats say meow. Cows moo and dogs woof."
+    },
+    {
+      "id": "q012",
+      "levelId": 3,
+      "type": "animals-actions",
+      "prompt": "A cow says ___.",
+      "choices": [
+        { "id": "a", "text": "moo" },
+        { "id": "b", "text": "quack" },
+        { "id": "c", "text": "meow" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "Cows say moo. Ducks quack and cats meow."
+    },
+    {
+      "id": "q013",
+      "levelId": 3,
+      "type": "animals-actions",
+      "prompt": "A fish can ___.",
+      "choices": [
+        { "id": "a", "text": "swim" },
+        { "id": "b", "text": "fly" },
+        { "id": "c", "text": "climb" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "Fish swim in the water."
+    },
+    {
+      "id": "q014",
+      "levelId": 3,
+      "type": "animals-actions",
+      "prompt": "A bird can ___.",
+      "choices": [
+        { "id": "a", "text": "bark" },
+        { "id": "b", "text": "drive" },
+        { "id": "c", "text": "fly" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "Birds fly with their wings."
+    },
+    {
+      "id": "q015",
+      "levelId": 3,
+      "type": "animals-actions",
+      "prompt": "A rabbit likes to ___.",
+      "choices": [
+        { "id": "a", "text": "jump" },
+        { "id": "b", "text": "bark" },
+        { "id": "c", "text": "meow" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "Rabbits jump and hop. Dogs bark and cats meow."
+    },
+    {
+      "id": "q016",
+      "levelId": 4,
+      "type": "everyday-vocab",
+      "prompt": "What color is snow?",
+      "choices": [
+        { "id": "a", "text": "white" },
+        { "id": "b", "text": "green" },
+        { "id": "c", "text": "black" },
+        { "id": "d", "text": "blue" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "Snow is white."
+    },
+    {
+      "id": "q017",
+      "levelId": 4,
+      "type": "everyday-vocab",
+      "prompt": "What color is grass?",
+      "choices": [
+        { "id": "a", "text": "pink" },
+        { "id": "b", "text": "blue" },
+        { "id": "c", "text": "green" },
+        { "id": "d", "text": "grey" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "Grass is green."
+    },
+    {
+      "id": "q018",
+      "levelId": 4,
+      "type": "everyday-vocab",
+      "prompt": "How many days are in a week?",
+      "choices": [
+        { "id": "a", "text": "five" },
+        { "id": "b", "text": "seven" },
+        { "id": "c", "text": "ten" },
+        { "id": "d", "text": "twelve" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "A week has seven days."
+    },
+    {
+      "id": "q019",
+      "levelId": 4,
+      "type": "everyday-vocab",
+      "prompt": "How many months are in a year?",
+      "choices": [
+        { "id": "a", "text": "seven" },
+        { "id": "b", "text": "ten" },
+        { "id": "c", "text": "two" },
+        { "id": "d", "text": "twelve" }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "A year has twelve months."
+    },
+    {
+      "id": "q020",
+      "levelId": 4,
+      "type": "everyday-vocab",
+      "prompt": "What do you use to tell the time?",
+      "choices": [
+        { "id": "a", "text": "spoon" },
+        { "id": "b", "text": "clock" },
+        { "id": "c", "text": "broom" },
+        { "id": "d", "text": "blanket" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "A clock shows the time."
+    },
+    {
+      "id": "q021",
+      "levelId": 5,
+      "type": "article",
+      "prompt": "I ate ___ apple.",
+      "choices": [
+        { "id": "a", "text": "an" },
+        { "id": "b", "text": "a" },
+        { "id": "c", "text": "and" },
+        { "id": "d", "text": "am" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "Use 'an' before a vowel sound: an apple."
+    },
+    {
+      "id": "q022",
+      "levelId": 5,
+      "type": "article",
+      "prompt": "She has ___ orange.",
+      "choices": [
+        { "id": "a", "text": "a" },
+        { "id": "b", "text": "an" },
+        { "id": "c", "text": "and" },
+        { "id": "d", "text": "am" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "Use 'an' before a vowel sound: an orange."
+    },
+    {
+      "id": "q023",
+      "levelId": 5,
+      "type": "article",
+      "prompt": "He is ___ good boy.",
+      "choices": [
+        { "id": "a", "text": "an" },
+        { "id": "b", "text": "and" },
+        { "id": "c", "text": "a" },
+        { "id": "d", "text": "am" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "Use 'a' before a consonant sound: a good boy."
+    },
+    {
+      "id": "q024",
+      "levelId": 5,
+      "type": "article",
+      "prompt": "I see ___ egg on the plate.",
+      "choices": [
+        { "id": "a", "text": "a" },
+        { "id": "b", "text": "and" },
+        { "id": "c", "text": "am" },
+        { "id": "d", "text": "an" }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "Use 'an' before a vowel sound: an egg."
+    },
+    {
+      "id": "q025",
+      "levelId": 5,
+      "type": "article",
+      "prompt": "We read ___ book at school.",
+      "choices": [
+        { "id": "a", "text": "a" },
+        { "id": "b", "text": "an" },
+        { "id": "c", "text": "and" },
+        { "id": "d", "text": "am" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "Use 'a' before a consonant sound: a book."
+    },
+    {
+      "id": "q026",
+      "levelId": 6,
+      "type": "be-verb",
+      "prompt": "I ___ a student.",
+      "choices": [
+        { "id": "a", "text": "am" },
+        { "id": "b", "text": "is" },
+        { "id": "c", "text": "are" },
+        { "id": "d", "text": "be" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "Use 'am' with I."
+    },
+    {
+      "id": "q027",
+      "levelId": 6,
+      "type": "be-verb",
+      "prompt": "He ___ my brother.",
+      "choices": [
+        { "id": "a", "text": "are" },
+        { "id": "b", "text": "is" },
+        { "id": "c", "text": "am" },
+        { "id": "d", "text": "be" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "Use 'is' with he, she and it."
+    },
+    {
+      "id": "q028",
+      "levelId": 6,
+      "type": "be-verb",
+      "prompt": "They ___ happy today.",
+      "choices": [
+        { "id": "a", "text": "is" },
+        { "id": "b", "text": "am" },
+        { "id": "c", "text": "are" },
+        { "id": "d", "text": "be" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "Use 'are' with they, we and you."
+    },
+    {
+      "id": "q029",
+      "levelId": 6,
+      "type": "be-verb",
+      "prompt": "You ___ very tall.",
+      "choices": [
+        { "id": "a", "text": "is" },
+        { "id": "b", "text": "are" },
+        { "id": "c", "text": "am" },
+        { "id": "d", "text": "be" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "Use 'are' with you."
+    },
+    {
+      "id": "q030",
+      "levelId": 6,
+      "type": "be-verb",
+      "prompt": "It ___ cold outside.",
+      "choices": [
+        { "id": "a", "text": "am" },
+        { "id": "b", "text": "are" },
+        { "id": "c", "text": "be" },
+        { "id": "d", "text": "is" }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "Use 'is' with it."
+    },
+    {
+      "id": "q031",
+      "levelId": 7,
+      "type": "present-simple",
+      "prompt": "She ___ to school every day.",
+      "choices": [
+        { "id": "a", "text": "go" },
+        { "id": "b", "text": "goes" },
+        { "id": "c", "text": "going" },
+        { "id": "d", "text": "gone" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "With she, add -s in the present simple: she goes."
+    },
+    {
+      "id": "q032",
+      "levelId": 7,
+      "type": "present-simple",
+      "prompt": "I ___ milk every morning.",
+      "choices": [
+        { "id": "a", "text": "drinks" },
+        { "id": "b", "text": "drank" },
+        { "id": "c", "text": "drink" },
+        { "id": "d", "text": "drinking" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "With I, use the base verb: I drink."
+    },
+    {
+      "id": "q033",
+      "levelId": 7,
+      "type": "present-simple",
+      "prompt": "He ___ football on Sundays.",
+      "choices": [
+        { "id": "a", "text": "play" },
+        { "id": "b", "text": "to play" },
+        { "id": "c", "text": "playing" },
+        { "id": "d", "text": "plays" }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "With he, add -s in the present simple: he plays."
+    },
+    {
+      "id": "q034",
+      "levelId": 7,
+      "type": "present-simple",
+      "prompt": "My dad ___ dinner every evening.",
+      "choices": [
+        { "id": "a", "text": "cook" },
+        { "id": "b", "text": "to cook" },
+        { "id": "c", "text": "cooking" },
+        { "id": "d", "text": "cooks" }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "My dad is he, so add -s: cooks."
+    },
+    {
+      "id": "q035",
+      "levelId": 7,
+      "type": "present-simple",
+      "prompt": "We ___ TV at night.",
+      "choices": [
+        { "id": "a", "text": "watch" },
+        { "id": "b", "text": "watches" },
+        { "id": "c", "text": "watching" },
+        { "id": "d", "text": "to watch" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "With we, use the base verb: watch."
+    },
+    {
+      "id": "q036",
+      "levelId": 8,
+      "type": "have-has",
+      "prompt": "I ___ two brothers.",
+      "choices": [
+        { "id": "a", "text": "have" },
+        { "id": "b", "text": "has" },
+        { "id": "c", "text": "having" },
+        { "id": "d", "text": "to have" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "Use 'have' with I, we, you and they."
+    },
+    {
+      "id": "q037",
+      "levelId": 8,
+      "type": "have-has",
+      "prompt": "She ___ a red bike.",
+      "choices": [
+        { "id": "a", "text": "have" },
+        { "id": "b", "text": "has" },
+        { "id": "c", "text": "having" },
+        { "id": "d", "text": "to have" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "Use 'has' with he, she and it."
+    },
+    {
+      "id": "q038",
+      "levelId": 8,
+      "type": "have-has",
+      "prompt": "They ___ a big dog.",
+      "choices": [
+        { "id": "a", "text": "has" },
+        { "id": "b", "text": "having" },
+        { "id": "c", "text": "have" },
+        { "id": "d", "text": "to have" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "Use 'have' with they."
+    },
+    {
+      "id": "q039",
+      "levelId": 8,
+      "type": "have-has",
+      "prompt": "He ___ three pencils.",
+      "choices": [
+        { "id": "a", "text": "have" },
+        { "id": "b", "text": "has" },
+        { "id": "c", "text": "having" },
+        { "id": "d", "text": "to have" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "Use 'has' with he."
+    },
+    {
+      "id": "q040",
+      "levelId": 8,
+      "type": "have-has",
+      "prompt": "A table ___ four legs.",
+      "choices": [
+        { "id": "a", "text": "have" },
+        { "id": "b", "text": "having" },
+        { "id": "c", "text": "to have" },
+        { "id": "d", "text": "has" }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "A table is it, so use 'has'."
+    },
+    {
+      "id": "q041",
+      "levelId": 9,
+      "type": "plural-pronoun",
+      "prompt": "Two ___ are on the table.",
+      "choices": [
+        { "id": "a", "text": "mouse" },
+        { "id": "b", "text": "mices" },
+        { "id": "c", "text": "mice" },
+        { "id": "d", "text": "mouses" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "The plural of mouse is mice."
+    },
+    {
+      "id": "q042",
+      "levelId": 9,
+      "type": "plural-pronoun",
+      "prompt": "Three ___ are playing in the park.",
+      "choices": [
+        { "id": "a", "text": "child" },
+        { "id": "b", "text": "children" },
+        { "id": "c", "text": "childs" },
+        { "id": "d", "text": "childrens" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "The plural of child is children."
+    },
+    {
+      "id": "q043",
+      "levelId": 9,
+      "type": "plural-pronoun",
+      "prompt": "My two ___ hurt after the run.",
+      "choices": [
+        { "id": "a", "text": "feet" },
+        { "id": "b", "text": "foots" },
+        { "id": "c", "text": "feets" },
+        { "id": "d", "text": "foot" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "The plural of foot is feet."
+    },
+    {
+      "id": "q044",
+      "levelId": 9,
+      "type": "plural-pronoun",
+      "prompt": "'Tom and I' means ___.",
+      "choices": [
+        { "id": "a", "text": "they" },
+        { "id": "b", "text": "she" },
+        { "id": "c", "text": "we" },
+        { "id": "d", "text": "he" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "Tom and I = we."
+    },
+    {
+      "id": "q045",
+      "levelId": 9,
+      "type": "plural-pronoun",
+      "prompt": "'Mrs. Brown' means ___.",
+      "choices": [
+        { "id": "a", "text": "she" },
+        { "id": "b", "text": "they" },
+        { "id": "c", "text": "we" },
+        { "id": "d", "text": "it" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "Mrs. Brown is one woman, so use she."
+    },
+    {
+      "id": "q046",
+      "levelId": 10,
+      "type": "past-simple",
+      "prompt": "Yesterday I ___ a pizza.",
+      "choices": [
+        { "id": "a", "text": "eat" },
+        { "id": "b", "text": "ate" },
+        { "id": "c", "text": "eats" },
+        { "id": "d", "text": "eating" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "The past of eat is ate."
+    },
+    {
+      "id": "q047",
+      "levelId": 10,
+      "type": "past-simple",
+      "prompt": "She ___ to the park yesterday.",
+      "choices": [
+        { "id": "a", "text": "goes" },
+        { "id": "b", "text": "going" },
+        { "id": "c", "text": "went" },
+        { "id": "d", "text": "go" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "The past of go is went."
+    },
+    {
+      "id": "q048",
+      "levelId": 10,
+      "type": "past-simple",
+      "prompt": "He ___ a movie last night.",
+      "choices": [
+        { "id": "a", "text": "watched" },
+        { "id": "b", "text": "watch" },
+        { "id": "c", "text": "watches" },
+        { "id": "d", "text": "watching" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "The past of watch is watched."
+    },
+    {
+      "id": "q049",
+      "levelId": 10,
+      "type": "past-simple",
+      "prompt": "We ___ at the beach yesterday.",
+      "choices": [
+        { "id": "a", "text": "are" },
+        { "id": "b", "text": "is" },
+        { "id": "c", "text": "be" },
+        { "id": "d", "text": "were" }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "The past of are is were."
+    },
+    {
+      "id": "q050",
+      "levelId": 10,
+      "type": "past-simple",
+      "prompt": "They ___ football yesterday.",
+      "choices": [
+        { "id": "a", "text": "play" },
+        { "id": "b", "text": "plays" },
+        { "id": "c", "text": "played" },
+        { "id": "d", "text": "playing" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "The past of play is played."
+    },
+    {
+      "id": "q051",
+      "levelId": 11,
+      "type": "preposition",
+      "prompt": "I get up ___ 7 o'clock.",
+      "choices": [
+        { "id": "a", "text": "in" },
+        { "id": "b", "text": "on" },
+        { "id": "c", "text": "to" },
+        { "id": "d", "text": "at" }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "Use 'at' with clock times: at 7 o'clock."
+    },
+    {
+      "id": "q052",
+      "levelId": 11,
+      "type": "preposition",
+      "prompt": "My birthday is ___ May.",
+      "choices": [
+        { "id": "a", "text": "in" },
+        { "id": "b", "text": "on" },
+        { "id": "c", "text": "at" },
+        { "id": "d", "text": "to" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "Use 'in' with months: in May."
+    },
+    {
+      "id": "q053",
+      "levelId": 11,
+      "type": "preposition",
+      "prompt": "We have English class ___ Monday.",
+      "choices": [
+        { "id": "a", "text": "in" },
+        { "id": "b", "text": "at" },
+        { "id": "c", "text": "on" },
+        { "id": "d", "text": "to" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "Use 'on' with days: on Monday."
+    },
+    {
+      "id": "q054",
+      "levelId": 11,
+      "type": "preposition",
+      "prompt": "Happy birthday ___ you!",
+      "choices": [
+        { "id": "a", "text": "in" },
+        { "id": "b", "text": "to" },
+        { "id": "c", "text": "at" },
+        { "id": "d", "text": "on" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "We say: Happy birthday to you!"
+    },
+    {
+      "id": "q055",
+      "levelId": 11,
+      "type": "preposition",
+      "prompt": "She listens ___ music.",
+      "choices": [
+        { "id": "a", "text": "at" },
+        { "id": "b", "text": "in" },
+        { "id": "c", "text": "to" },
+        { "id": "d", "text": "on" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "We say: listen to music."
+    },
+    {
+      "id": "q056",
+      "levelId": 12,
+      "type": "quantifier",
+      "prompt": "How ___ water do you drink?",
+      "choices": [
+        { "id": "a", "text": "many" },
+        { "id": "b", "text": "much" },
+        { "id": "c", "text": "a lot" },
+        { "id": "d", "text": "more" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "Water has no plural, so use 'much'."
+    },
+    {
+      "id": "q057",
+      "levelId": 12,
+      "type": "quantifier",
+      "prompt": "How ___ books do you have?",
+      "choices": [
+        { "id": "a", "text": "much" },
+        { "id": "b", "text": "a lot" },
+        { "id": "c", "text": "many" },
+        { "id": "d", "text": "more" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "Books can be counted, so use 'many'."
+    },
+    {
+      "id": "q058",
+      "levelId": 12,
+      "type": "quantifier",
+      "prompt": "How ___ sugar do you want?",
+      "choices": [
+        { "id": "a", "text": "many" },
+        { "id": "b", "text": "much" },
+        { "id": "c", "text": "a lot" },
+        { "id": "d", "text": "more" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "Sugar has no plural, so use 'much'."
+    },
+    {
+      "id": "q059",
+      "levelId": 12,
+      "type": "quantifier",
+      "prompt": "How ___ apples are on the table?",
+      "choices": [
+        { "id": "a", "text": "much" },
+        { "id": "b", "text": "a lot" },
+        { "id": "c", "text": "more" },
+        { "id": "d", "text": "many" }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "Apples can be counted, so use 'many'."
+    },
+    {
+      "id": "q060",
+      "levelId": 12,
+      "type": "quantifier",
+      "prompt": "How ___ money does he need?",
+      "choices": [
+        { "id": "a", "text": "much" },
+        { "id": "b", "text": "many" },
+        { "id": "c", "text": "a lot" },
+        { "id": "d", "text": "more" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "Money uses 'much': how much money."
+    },
+    {
+      "id": "q061",
+      "levelId": 13,
+      "type": "comparative",
+      "prompt": "An elephant is ___ than a dog.",
+      "choices": [
+        { "id": "a", "text": "big" },
+        { "id": "b", "text": "bigger" },
+        { "id": "c", "text": "biggest" },
+        { "id": "d", "text": "biger" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "Short words take -er: bigger than."
+    },
+    {
+      "id": "q062",
+      "levelId": 13,
+      "type": "comparative",
+      "prompt": "A rabbit is ___ than a turtle.",
+      "choices": [
+        { "id": "a", "text": "fast" },
+        { "id": "b", "text": "fastest" },
+        { "id": "c", "text": "more fast" },
+        { "id": "d", "text": "faster" }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "Short words take -er: faster than."
+    },
+    {
+      "id": "q063",
+      "levelId": 13,
+      "type": "comparative",
+      "prompt": "Winter is ___ than summer.",
+      "choices": [
+        { "id": "a", "text": "cold" },
+        { "id": "b", "text": "colder" },
+        { "id": "c", "text": "coldest" },
+        { "id": "d", "text": "more cold" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "Short words take -er: colder than."
+    },
+    {
+      "id": "q064",
+      "levelId": 13,
+      "type": "comparative",
+      "prompt": "A giraffe is ___ than a horse.",
+      "choices": [
+        { "id": "a", "text": "tall" },
+        { "id": "b", "text": "taller" },
+        { "id": "c", "text": "tallest" },
+        { "id": "d", "text": "more tall" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "Short words take -er: taller than."
+    },
+    {
+      "id": "q065",
+      "levelId": 13,
+      "type": "comparative",
+      "prompt": "A car is ___ than a bicycle.",
+      "choices": [
+        { "id": "a", "text": "heavy" },
+        { "id": "b", "text": "heavier" },
+        { "id": "c", "text": "heaviest" },
+        { "id": "d", "text": "more heavy" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "Heavy ends in -y, so it becomes heavier."
+    },
+    {
+      "id": "q066",
+      "levelId": 14,
+      "type": "verb-pattern-modal",
+      "prompt": "She enjoys ___ songs.",
+      "choices": [
+        { "id": "a", "text": "sing" },
+        { "id": "b", "text": "to sing" },
+        { "id": "c", "text": "singing" },
+        { "id": "d", "text": "sings" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "After enjoy, use verb+ing: enjoys singing."
+    },
+    {
+      "id": "q067",
+      "levelId": 14,
+      "type": "verb-pattern-modal",
+      "prompt": "He can ___ very fast.",
+      "choices": [
+        { "id": "a", "text": "runs" },
+        { "id": "b", "text": "to run" },
+        { "id": "c", "text": "running" },
+        { "id": "d", "text": "run" }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "After can, use the base verb: can run."
+    },
+    {
+      "id": "q068",
+      "levelId": 14,
+      "type": "verb-pattern-modal",
+      "prompt": "You should ___ more water.",
+      "choices": [
+        { "id": "a", "text": "drink" },
+        { "id": "b", "text": "to drink" },
+        { "id": "c", "text": "drinking" },
+        { "id": "d", "text": "drinks" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "After should, use the base verb: should drink."
+    },
+    {
+      "id": "q069",
+      "levelId": 14,
+      "type": "verb-pattern-modal",
+      "prompt": "I want ___ a new phone.",
+      "choices": [
+        { "id": "a", "text": "buy" },
+        { "id": "b", "text": "buying" },
+        { "id": "c", "text": "to buy" },
+        { "id": "d", "text": "buys" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "After want, use to + verb: want to buy."
+    },
+    {
+      "id": "q070",
+      "levelId": 14,
+      "type": "verb-pattern-modal",
+      "prompt": "Let's ___ to the park.",
+      "choices": [
+        { "id": "a", "text": "goes" },
+        { "id": "b", "text": "go" },
+        { "id": "c", "text": "to go" },
+        { "id": "d", "text": "going" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "After let's, use the base verb: let's go."
+    },
+    {
+      "id": "q071",
+      "levelId": 15,
+      "type": "mixed-review",
+      "prompt": "The opposite of 'full' is ___.",
+      "choices": [
+        { "id": "a", "text": "empty" },
+        { "id": "b", "text": "heavy" },
+        { "id": "c", "text": "loud" },
+        { "id": "d", "text": "round" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "Full and empty are opposites."
+    },
+    {
+      "id": "q072",
+      "levelId": 15,
+      "type": "mixed-review",
+      "prompt": "I ___ a letter yesterday.",
+      "choices": [
+        { "id": "a", "text": "write" },
+        { "id": "b", "text": "writes" },
+        { "id": "c", "text": "wrote" },
+        { "id": "d", "text": "writing" }
+      ],
+      "correctAnswerId": "c",
+      "explanation": "The past of write is wrote."
+    },
+    {
+      "id": "q073",
+      "levelId": 15,
+      "type": "mixed-review",
+      "prompt": "How ___ stars can you see tonight?",
+      "choices": [
+        { "id": "a", "text": "much" },
+        { "id": "b", "text": "many" },
+        { "id": "c", "text": "a lot" },
+        { "id": "d", "text": "more" }
+      ],
+      "correctAnswerId": "b",
+      "explanation": "Stars can be counted, so use 'many'."
+    },
+    {
+      "id": "q074",
+      "levelId": 15,
+      "type": "mixed-review",
+      "prompt": "___ you like pizza?",
+      "choices": [
+        { "id": "a", "text": "Do" },
+        { "id": "b", "text": "Does" },
+        { "id": "c", "text": "Is" },
+        { "id": "d", "text": "Are" }
+      ],
+      "correctAnswerId": "a",
+      "explanation": "With you, ask questions with Do."
+    },
+    {
+      "id": "q075",
+      "levelId": 15,
+      "type": "mixed-review",
+      "prompt": "There ___ a cat on the sofa.",
+      "choices": [
+        { "id": "a", "text": "are" },
+        { "id": "b", "text": "be" },
+        { "id": "c", "text": "am" },
+        { "id": "d", "text": "is" }
+      ],
+      "correctAnswerId": "d",
+      "explanation": "A cat is one thing, so use 'is'."
+    }
+  ]
+}

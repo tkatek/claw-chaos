@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>CLAW CHAOS - English Claw Machine</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <div id="game-shell">
+    <div id="game-wrap">
+      <canvas id="game-canvas"></canvas>
+      <button id="btn-pause" class="chrome-btn hidden" aria-label="Pause">&#10073;&#10073;</button>
+
+      <!-- overlays -->
+      <div id="screen-loading" class="overlay">
+        <h1 class="logo">CLAW CHAOS</h1>
+        <p class="overlay-text">Loading toys and questions...</p>
+      </div>
+
+      <div id="screen-error" class="overlay hidden">
+        <h1 class="logo">CLAW CHAOS</h1>
+        <p class="overlay-text">Something failed to load:</p>
+        <p id="error-message" class="overlay-error">unknown error</p>
+        <button id="btn-error-retry" class="gold-btn">Try again</button>
+      </div>
+
+      <div id="screen-start" class="overlay hidden">
+        <h1 class="logo">CLAW CHAOS</h1>
+        <p class="overlay-text">Catch the toy with the right English answer!</p>
+        <ul class="help-list">
+          <li>Move: &#8592; &#8594; / A D / hold buttons</li>
+          <li>Drop: SPACE / tap the window / DROP</li>
+          <li>Pause: ESC</li>
+        </ul>
+        <button id="btn-start" class="gold-btn big">START</button>
+      </div>
+
+      <div id="screen-levels" class="overlay hidden">
+        <h2 class="overlay-title">Choose a level</h2>
+        <div id="levels-grid"></div>
+        <button id="btn-levels-back" class="gold-btn">Back</button>
+      </div>
+
+      <div id="screen-pause" class="overlay hidden">
+        <h2 class="overlay-title">PAUSED</h2>
+        <p id="pause-note" class="overlay-text">Take your time.</p>
+        <button id="btn-resume" class="gold-btn big">RESUME</button>
+        <div class="row">
+          <button id="btn-retry" class="gold-btn">Retry level</button>
+          <button id="btn-home" class="gold-btn">Home</button>
+        </div>
+      </div>
+
+      <div id="screen-results" class="overlay hidden">
+        <h2 id="results-title" class="overlay-title">LEVEL COMPLETE!</h2>
+        <div id="results-stars" class="stars">&#9733;&#9734;&#9734;</div>
+        <p id="results-score" class="overlay-text">0 points</p>
+        <div class="row">
+          <button id="btn-results-retry" class="gold-btn">Retry</button>
+          <button id="btn-next-level" class="gold-btn">Next level</button>
+        </div>
+        <button id="btn-results-home" class="gold-btn">Home</button>
+      </div>
+    </div>
+
+    <div id="touch-bar" class="hidden">
+      <button id="btn-left" class="pad-btn" aria-label="Move left">&#9664;</button>
+      <button id="btn-drop" class="pad-btn drop" aria-label="Drop claw">DROP</button>
+      <button id="btn-right" class="pad-btn" aria-label="Move right">&#9654;</button>
+    </div>
+  </div>
+
+  <script src="js/assets.js"></script>
+  <script src="js/questions.js"></script>
+  <script src="js/levels.js"></script>
+  <script src="js/toys.js"></script>
+  <script src="js/claw.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/controls.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

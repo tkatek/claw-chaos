@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CLAW CHAOS asset calibration</title>
+<style>
+  body { background: #222; color: #eee; font: 13px monospace; margin: 0; padding: 12px; }
+  h2 { margin: 18px 0 4px; color: #ffd76a; }
+  .thumbwrap { display: inline-block; margin: 6px; vertical-align: top; }
+  canvas { background:
+      repeating-conic-gradient(#555 0% 25%, #333 0% 50%) 0 0/24px 24px; display: block; }
+  pre { background: #111; padding: 8px; max-width: 100%; overflow: auto; }
+  img { display: none; }
+</style>
+</head>
+<body>
+<h1>Asset calibration</h1>
+<div id="stages"></div>
+<pre id="report">loading…</pre>
+<script>
+const ASSETS = [
+  '../assets/claw/claw_open_long_cable.png',
+  '../assets/claw/claw_closed_long_cable.png',
+  '../assets/toys/toy_01_green_monster.png',
+  '../assets/toys/toy_02_pink_bear.png',
+  '../assets/toys/toy_03_blue_monster.png',
+  '../assets/toys/toy_04_yellow_chick.png',
+  '../assets/toys/toy_05_orange_bear.png',
+  '../assets/toys/toy_06_lavender_bear.png',
+  '../assets/toys/toy_07_purple_monster.png',
+  '../assets/toys/toy_08_teal_monster.png',
+  '../assets/windows/window_desktop.png',
+  '../assets/windows/window_ipad.png',
+  '../assets/windows/window_phone.png',
+  '../assets/ui/top_question_card_blank.png'
+];
+
+function analyze(img, maxW) {
+  const w0 = img.naturalWidth, h0 = img.naturalHeight;
+  const scale = Math.min(1, maxW / w0);
+  const w = Math.max(2, Math.round(w0 * scale)), h = Math.max(2, Math.round(h0 * scale));
+  const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+  const cx = cv.getContext('2d', { willReadFrequently: true });
+  cx.drawImage(img, 0, 0, w, h);
+  const d = cx.getImageData(0, 0, w, h).data;
+  const alpha = (x, y) => d[(y * w + x) * 4 + 3];
+  // bbox + per-row extents
+  let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1;
+  const rowW = new Array(h).fill(0), rowMinX = new Array(h).fill(1e9), rowMaxX = new Array(h).fill(-1);
+  const colTop = new Array(w).fill(1e9), colBot = new Array(w).fill(-1);
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (alpha(x, y) > 8) {
+        if (x < x0) x0 = x; if (x > x1) x1 = x;
+        if (y < y0) y0 = y; if (y > y1) y1 = y;
+        rowW[y]++; if (x < rowMinX[y]) rowMinX[y] = x; if (x > rowMaxX[y]) rowMaxX[y] = x;
+        if (y < colTop[x]) colTop[x] = y; if (y > colBot[x]) colBot[x] = y;
+      }
+    }
+  }
+  const n = v => v / (v === x0 || v === x1 ? w - 1 : (v < w ? w - 1 : w - 1)); // helper unused
+  const bbox = x1 < 0 ? null : {
+    x0: +(x0 / (w - 1)).toFixed(4), y0: +(y0 / (h - 1)).toFixed(4),
+    x1: +(x1 / (w - 1)).toFixed(4), y1: +(y1 / (h - 1)).toFixed(4)
+  };
+  // cable vs head: rows whose content width > 30% of content width max
+  const maxRowW = Math.max.apply(null, rowW);
+  let headTopY = -1, headBotY = -1;
+  for (let y = 0; y < h; y++) {
+    if (rowW[y] > maxRowW * 0.3) { if (headTopY < 0) headTopY = y; headBotY = y; }
+  }
+  const headSplit = headTopY > 0 ? {
+    headTop: +(headTopY / (h - 1)).toFixed(4),
+    headBottom: +(headBotY / (h - 1)).toFixed(4),
+    cableBBox: {
+      x0: +(Math.min.apply(null, rowMinX.slice(0, headTopY).filter(v => v < 1e9)) / (w - 1)).toFixed(4),
+      x1: +(Math.max.apply(null, rowMaxX.slice(0, headTopY).filter(v => v > -1)) / (w - 1)).toFixed(4),
+      y0: bbox.y0
+    }
+  } : null;
+  // largest fully transparent rectangle (interior of frames)
+  const mask = new Uint8Array(w * h); // 1 = transparent
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) mask[y * w + x] = alpha(x, y) <= 8 ? 1 : 0;
+  let best = { area: 0, x0: 0, y0: 0, x1: 0, y1: 0 };
+  const heights = new Array(w).fill(0);
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) heights[x] = mask[y * w + x] ? heights[x] + 1 : 0;
+    const stack = [];
+    for (let x = 0; x <= w; x++) {
+      const cur = x < w ? heights[x] : 0;
+      let start = x;
+      while (stack.length && stack[stack.length - 1][1] > cur) {
+        const [sx, sh] = stack.pop();
+        const area = sh * (x - sx);
+        if (area > best.area) best = { area, x0: sx, y0: y - sh + 1, x1: x - 1, y1: y };
+        start = sx;
+      }
+      if (!stack.length || stack[stack.length - 1][1] < cur) stack.push([start, cur]);
+    }
+  }
+  const interior = best.area > 0 ? {
+    x0: +(best.x0 / (w - 1)).toFixed(4), y0: +(best.y0 / (h - 1)).toFixed(4),
+    x1: +(best.x1 / (w - 1)).toFixed(4), y1: +(best.y1 / (h - 1)).toFixed(4),
+    areaPct: +(100 * best.area / (w * h)).toFixed(1)
+  } : null;
+  return { w: w0, h: h0, bbox, headSplit, interior };
+}
+
+function drawThumb(stage, img, W, overlays) {
+  const w0 = img.naturalWidth, h0 = img.naturalHeight;
+  const tw = W, th = Math.round(W * h0 / w0);
+  const cv = document.createElement('canvas'); cv.width = tw; cv.height = th;
+  const cx = cv.getContext('2d');
+  cx.drawImage(img, 0, 0, tw, th);
+  (overlays || []).forEach(o => {
+    cx.strokeStyle = o.color; cx.lineWidth = 3;
+    cx.strokeRect(o.x * tw, o.y * th, o.w * tw, o.h * th);
+    if (o.mark) {
+      cx.fillStyle = o.color;
+      cx.beginPath(); cx.arc(o.x * tw, o.y * th, 5, 0, 7); cx.fill();
+    }
+  });
+  cx.strokeStyle = 'rgba(255,60,60,.8)'; cx.lineWidth = 1;
+  for (let i = 1; i < 10; i++) {
+    cx.beginPath(); cx.moveTo(i * tw / 10, 0); cx.lineTo(i * tw / 10, th); cx.stroke();
+    cx.beginPath(); cx.moveTo(0, i * th / 10); cx.lineTo(tw, i * th / 10); cx.stroke();
+  }
+  cx.fillStyle = '#0af'; cx.font = '10px monospace';
+  for (let i = 0; i <= 10; i += 2) {
+    cx.fillText((i * 10) + '', Math.min(i * tw / 10 + 2, tw - 18), 10);
+    if (i > 0) cx.fillText((i * 10) + '', 2, Math.min(i * th / 10 + 10, th - 2));
+  }
+  stage.appendChild(cv);
+}
+
+(async () => {
+  const stages = document.getElementById('stages');
+  const report = {};
+  for (const src of ASSETS) {
+    const img = new Image();
+    img.src = src;
+    await new Promise((ok, bad) => { img.onload = ok; img.onerror = bad; });
+    const name = src.split('/').pop().replace('.png', '');
+    const h2 = document.createElement('h2'); h2.textContent = src + '  (' + img.naturalWidth + 'x' + img.naturalHeight + ')';
+    const wrap = document.createElement('div'); wrap.className = 'thumbwrap';
+    stages.appendChild(h2); stages.appendChild(wrap);
+    const overlays = [];
+    if (src.includes('toys')) {
+      overlays.push({ color: '#0f0', x: 0.16, y: 0.055, w: 0.68, h: 0.155 });       // proposed label rect
+      overlays.push({ color: '#f0f', x: 0.5, y: 0.045, w: 0, h: 0, mark: true });    // proposed grip anchor
+    }
+    if (src.includes('windows')) {
+      overlays.push({ color: '#0f0', x: 0.045, y: 0.15, w: 0.91, h: 0.68 });        // proposed playfield
+      overlays.push({ color: '#f0f', x: 0.5, y: 0.5, w: 0, h: 0, mark: true });
+    }
+    drawThumb(wrap, img, src.includes('toys') ? 340 : 460, overlays);
+    report[name] = analyze(img, 480);
+  }
+  document.getElementById('report').textContent = JSON.stringify(report, null, 1);
+})().catch(e => { document.getElementById('report').textContent = 'ERROR: ' + e; });
+</script>
+</body>
+</html>
